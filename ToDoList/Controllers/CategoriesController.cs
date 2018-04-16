@@ -13,17 +13,26 @@ namespace ToDoList.Controllers
     public class CategoryController : Controller
     {
         private ToDoListContext db = new ToDoListContext();
+
+        public IActionResult Category()
+        {
+            List<Category> model = db.Categories.ToList();
+            return View(model);
+            //return View(db.Categories.Include(categories => categories.Name).ToList());
+        }
+
+
         public IActionResult Index()
         {
-            //List<Item> model = db.Items.ToList();
-            //return View(model);
-            return View(db.Categories.Include(items => items.Name).ToList());
+            List<Category> model = db.Categories.ToList();
+            return View(model);
+            //return View(db.Categories.Include(categories => categories.name).ToList());
         }
 
         public IActionResult Details(int id)
         {
-            //Item thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
-            var thisCatagory = db.Categories.FirstOrDefault(items => items.CategoryId == id);
+            //Item thisItem = db.categories.FirstOrDefault(categories => categories.ItemId == id);
+            var thisCatagory = db.Categories.FirstOrDefault(categories => categories.CategoryId == id);
             return View(thisCatagory);
         }
 
@@ -43,7 +52,7 @@ namespace ToDoList.Controllers
 
         public IActionResult Edit(int id)
         {
-            var thisCategory = db.Categories.FirstOrDefault(items => items.CategoryId == id);
+            var thisCategory = db.Categories.FirstOrDefault(categories => categories.CategoryId == id);
             ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
             return View(thisCategory);
         }
@@ -58,14 +67,14 @@ namespace ToDoList.Controllers
 
         public IActionResult Delete(int id)
         {
-            var thisCategory = db.Categories.FirstOrDefault(items => items.CategoryId == id);
+            var thisCategory = db.Categories.FirstOrDefault(categories => categories.CategoryId == id);
             return View(thisCategory);
         }
 
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var thisCategory = db.Categories.FirstOrDefault(items => items.CategoryId == id);
+            var thisCategory = db.Categories.FirstOrDefault(categories => categories.CategoryId == id);
             db.Categories.Remove(thisCategory);
             db.SaveChanges();
             return RedirectToAction("Index");

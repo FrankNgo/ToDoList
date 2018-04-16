@@ -70,5 +70,11 @@ namespace ToDoList.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
+        public IActionResult Category()
+        {
+            return View("../Categories/Index");
+        }
     }
 }
