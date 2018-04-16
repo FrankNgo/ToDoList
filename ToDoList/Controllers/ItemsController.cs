@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ToDoList.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 
 namespace ToDoList.Controllers
 {
@@ -13,31 +15,22 @@ namespace ToDoList.Controllers
         private ToDoListContext db = new ToDoListContext();
         public IActionResult Index()
         {
-            List<Item> model = db.Items.ToList();
-            return View(model);
+            //List<Item> model = db.Items.ToList();
+            //return View(model);
+            return View(db.Items.Include(items => items.Category).ToList());
         }
 
         public IActionResult Details(int id)
         {
-            Item thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
+            //Item thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
+            var thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
             return View(thisItem);
         }
 
         public IActionResult Create()
         {
+            ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
             return View();
-        }
-
-        public IActionResult Edit(int id)
-        {
-            var thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
-            return View(thisItem);
-        }
-
-        public IActionResult Delete(int id)
-        {
-            var thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
-            return View(thisItem);
         }
 
         [HttpPost]
@@ -48,12 +41,25 @@ namespace ToDoList.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult Edit(int id)
+        {
+            var thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
+            ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
+            return View(thisItem);
+        }
+
         [HttpPost]
         public IActionResult Edit(Item item)
         {
             db.Entry(item).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var thisItem = db.Items.FirstOrDefault(items => items.ItemId == id);
+            return View(thisItem);
         }
 
         [HttpPost, ActionName("Delete")]
