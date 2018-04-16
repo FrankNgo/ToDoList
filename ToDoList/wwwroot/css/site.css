@@ -35,3 +35,12 @@ textarea {
         display: none
     }
 }
+
+label {
+    display: block
+}
+
+td input[type=checkbox]:checked + span {
+    text-decoration: line-through
+}
+
